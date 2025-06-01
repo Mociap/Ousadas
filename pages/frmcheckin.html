@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECK-IN</title>
+    <link rel="shortcut icon" href="../assets/3.ico" type="image/x-icon">
+    <link rel="stylesheet" href="../css/common.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            padding-top: 80px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-circle {
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -30%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .logo-circle img {
+            max-width: 150px;
+            height: auto;
+            margin-top: 15px;
+        }
+
+        .logo-circle.scrolled {
+            left: 60px;
+            transform: translate(0, -30%);
+            background: transparent;
+            box-shadow: none;
+            top: 5px;
+        }
+
+        .scrolled .logo-circle img {
+            content: url('./assets/Logo\ 360\ sem\ Fundo.png');
+            width: 180px;
+            height: auto;
+            margin-top: -80;
+        }
+
+        .header-title {
+            color: white;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: none;
+        }
+
+        .header-title.visible {
+            opacity: 1;
+            display: block;
+        }
+
+        .divider {
+            width: 75%;
+            height: 2px;
+            background-color: #000;
+            margin: 30px auto;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #6108a1, #9900CC);
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(45deg, #200020, #9900CC);
+        }
+
+        .form-control:focus {
+            border-color: #3d7517;
+            box-shadow: 0 0 0 0.2rem rgba(128, 0, 128, 0.25);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 24px;
+            margin-left: 10px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        .info-box {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        input:checked+.slider {
+            background: linear-gradient(45deg, #3d7517, #3d7517);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(16px);
+        }
+
+        .section-title {
+            background-color: #6108a1;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 120px;
+            }
+
+            .container {
+                max-width: 89%;
+                margin: 10px 5px;
+                padding: 15px;
+                border-radius: 0;
+            }
+
+            .logo-circle.scrolled {
+                left: 3px;
+                transform: translate(0, -30%);
+            }
+
+            .scrolled .logo-circle img {
+                width: 96px;
+                height: auto;
+            }
+
+            .header-title {
+                font-size: 1rem;
+            }
+
+            .header {
+                position: fixed;
+                top: 0;
+                width: 100%;
+                z-index: 1000;
+            }
+        }
+
+        .signature-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+
+        .signature-pad {
+            width: 100%;
+            height: 200px;
+            touch-action: none;
+        }
+
+        .signature-buttons {
+            display: flex;
+            justify-content: flex-end;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h2 class="header-title">CHECK-IN</h2>
+    </div>
+    <div class="container">
+        <h2 class="text-center mb-4 font-weight-bold">CHECK-IN</h2>
+        <div class="divider"></div>
+
+        <div class="info-box">
+            <p><strong>Informações importantes:</strong></p>
+            <p>Este formulário deve ser preenchido no momento do check-in do participante.</p>
+            <p>Todas as informações são essenciais para garantir a segurança e bem-estar durante o evento.</p>
+            <p>Em caso de dúvidas, entre em contato com a equipe organizadora.</p>
+        </div>
+
+        <form id="checkinForm">
+            <!-- DADOS PESSOAIS -->
+            <div class="section-title">
+                <h4 class="mb-0">DADOS PESSOAIS</h4>
+            </div>
+
+            <div class="form-group">
+                <label for="nome">Nome Completo</label>
+                <select class="form-control" id="nome" required>
+                    <option value="">Selecione o participante</option>
+                    <!-- As opções serão carregadas dinamicamente via JavaScript -->
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="dtnasc">Data de Nascimento</label>
+                    <input type="date" class="form-control" id="dtnasc" readonly>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="idade">Idade</label>
+                    <input type="text" class="form-control" id="idade" readonly>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="cpf">CPF</label>
+                    <input type="text" class="form-control" id="cpf" readonly>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="responsavel">Nome dos Pais ou Responsáveis</label>
+                <input type="text" class="form-control" id="responsavel" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefone1">Telefone de Emergência</label>
+                <input type="text" class="form-control" id="telefone1" placeholder="(99) 99999-9999" required>
+            </div>
+
+            <!-- SAÚDE -->
+            <div class="section-title">
+                <h4 class="mb-0">SAÚDE</h4>
+            </div>
+
+            <div class="form-group">
+                <label>Possui alergias alimentares?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="alergiasAlimentares" id="alergiasAlimentaresSim" value="sim">
+                    <label class="form-check-label" for="alergiasAlimentaresSim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="alergiasAlimentares" id="alergiasAlimentaresNao" value="nao" checked>
+                    <label class="form-check-label" for="alergiasAlimentaresNao">Não</label>
+                </div>
+                <div class="form-group mt-2" id="quaisAlergiasAlimentaresDiv" style="display: none;">
+                    <label for="quaisAlergiasAlimentares">Quais alergias alimentares?</label>
+                    <textarea class="form-control" id="quaisAlergiasAlimentares" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Possui alergias a medicamentos?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="alergiasMedicamentos" id="alergiasMedicamentosSim" value="sim">
+                    <label class="form-check-label" for="alergiasMedicamentosSim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="alergiasMedicamentos" id="alergiasMedicamentosNao" value="nao" checked>
+                    <label class="form-check-label" for="alergiasMedicamentosNao">Não</label>
+                </div>
+                <div class="form-group mt-2" id="quaisAlergiasMedicamentosDiv" style="display: none;">
+                    <label for="quaisAlergiasMedicamentos">Quais alergias a medicamentos?</label>
+                    <textarea class="form-control" id="quaisAlergiasMedicamentos" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Possui alergias a picadas de insetos?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="alergiasInsetos" id="alergiasInsetosSim" value="sim">
+                    <label class="form-check-label" for="alergiasInsetosSim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="alergiasInsetos" id="alergiasInsetosNao" value="nao" checked>
+                    <label class="form-check-label" for="alergiasInsetosNao">Não</label>
+                </div>
+                <div class="form-group mt-2" id="quaisAlergiasInsetosDiv" style="display: none;">
+                    <label for="quaisAlergiasInsetos">Quais alergias a picadas de insetos?</label>
+                    <textarea class="form-control" id="quaisAlergiasInsetos" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Faz uso de medicamentos controlados?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="medicamentosControlados" id="medicamentosControladosSim" value="sim">
+                    <label class="form-check-label" for="medicamentosControladosSim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="medicamentosControlados" id="medicamentosControladosNao" value="nao" checked>
+                    <label class="form-check-label" for="medicamentosControladosNao">Não</label>
+                </div>
+                <div class="form-group mt-2" id="quaisMedicamentosDiv" style="display: none;">
+                    <label for="quaisMedicamentos">Quais medicamentos, dosagem e horários?</label>
+                    <textarea class="form-control" id="quaisMedicamentos" rows="3"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Possui problemas de saúde que devemos saber?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="problemasSaude" id="problemasSaudeSim" value="sim">
+                    <label class="form-check-label" for="problemasSaudeSim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="problemasSaude" id="problemasSaudeNao" value="nao" checked>
+                    <label class="form-check-label" for="problemasSaudeNao">Não</label>
+                </div>
+                <div class="form-group mt-2" id="quaisProblemasSaudeDiv" style="display: none;">
+                    <label for="quaisProblemasSaude">Quais problemas de saúde? (Ex.: asma, diabetes, epilepsia)</label>
+                    <textarea class="form-control" id="quaisProblemasSaude" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="tipoSanguineo">Tipo Sanguíneo</label>
+                    <select class="form-control" id="tipoSanguineo">
+                        <option value="">Selecione</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="Não sei">Não sei</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label>Vacinas em dia?</label>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="vacinasEmDia" id="vacinasEmDiaSim" value="sim" checked>
+                        <label class="form-check-label" for="vacinasEmDiaSim">Sim</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="vacinasEmDia" id="vacinasEmDiaNao" value="nao">
+                        <label class="form-check-label" for="vacinasEmDiaNao">Não</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="seguroSaude">Possui seguro saúde? Qual?</label>
+                <input type="text" class="form-control" id="seguroSaude" placeholder="Nome do plano e número da carteirinha (se houver)">
+            </div>
+
+            <div class="form-group">
+                <label for="hospitalPreferencia">Hospital de preferência em caso de emergência</label>
+                <input type="text" class="form-control" id="hospitalPreferencia">
+            </div>
+
+            <div class="form-group">
+                <label>Possui restrições para atividades físicas?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="restricoesAtividades" id="restricoesAtividadesSim" value="sim">
+                    <label class="form-check-label" for="restricoesAtividadesSim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="restricoesAtividades" id="restricoesAtividadesNao" value="nao" checked>
+                    <label class="form-check-label" for="restricoesAtividadesNao">Não</label>
+                </div>
+                <div class="form-group mt-2" id="quaisRestricoesDiv" style="display: none;">
+                    <label for="quaisRestricoes">Quais restrições?</label>
+                    <textarea class="form-control" id="quaisRestricoes" rows="2"></textarea>
+                </div>
+            </div>
+
+            <!-- ALIMENTAÇÃO -->
+            <div class="section-title">
+                <h4 class="mb-0">ALIMENTAÇÃO</h4>
+            </div>
+
+            <div class="form-group">
+                <label>Possui restrições alimentares ou dietas específicas?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="restricoesAlimentares" id="restricoesAlimentaresSim" value="sim">
+                    <label class="form-check-label" for="restricoesAlimentaresSim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="restricoesAlimentares" id="restricoesAlimentaresNao" value="nao" checked>
+                    <label class="form-check-label" for="restricoesAlimentaresNao">Não</label>
+                </div>
+                <div class="form-group mt-2" id="quaisRestricoesAlimentaresDiv" style="display: none;">
+                    <label for="quaisRestricoesAlimentares">Quais restrições? (Ex.: vegetariano, vegano, intolerância à lactose)</label>
+                    <textarea class="form-control" id="quaisRestricoesAlimentares" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="alimentosNaoConsome">Lista de alimentos que não pode consumir (se houver)</label>
+                <textarea class="form-control" id="alimentosNaoConsome" rows="2"></textarea>
+            </div>
+
+            <!-- OUTROS -->
+            <div class="section-title">
+                <h4 class="mb-0">OUTROS</h4>
+            </div>
+
+            <div class="form-group">
+                <label>Algum comportamento ou condição especial que devemos estar atentos?</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="comportamentoEspecial" id="comportamentoEspecialSim" value="sim">
+                    <label class="form-check-label" for="comportamentoEspecialSim">Sim</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="comportamentoEspecial" id="comportamentoEspecialNao" value="nao" checked>
+                    <label class="form-check-label" for="comportamentoEspecialNao">Não</label>
+                </div>
+                <div class="form-group mt-2" id="qualComportamentoDiv" style="display: none;">
+                    <label for="qualComportamento">Qual comportamento? (Ex.: timidez extrema, hiperatividade, sonambulismo)</label>
+                    <textarea class="form-control" id="qualComportamento" rows="2"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="observacoesAdicionais">Observações adicionais</label>
+                <textarea class="form-control" id="observacoesAdicionais" rows="3"></textarea>
+            </div>
+
+            <!-- AUTORIZAÇÕES E TERMOS -->
+            <div class="section-title">
+                <h4 class="mb-0">AUTORIZAÇÕES E TERMOS</h4>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autorizacaoParticipacao" required>
+                    <label class="form-check-label" for="autorizacaoParticipacao">
+                        Autorizo a participação no evento
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autorizacaoEmergencia" required>
+                    <label class="form-check-label" for="autorizacaoEmergencia">
+                        Autorizo atendimento médico de emergência
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autorizacaoFotos" required>
+                    <label class="form-check-label" for="autorizacaoFotos">
+                        Autorizo o uso de imagens em redes sociais e comunicação do evento
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="autorizacaoMedicamentos" required>
+                    <label class="form-check-label" for="autorizacaoMedicamentos">
+                        Autorizo a administração de medicamentos básicos (analgésicos, antitérmicos)
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="dataPreenchimento">Data de Preenchimento</label>
+                <input type="text" class="form-control" id="dataPreenchimento" readonly>
+            </div>
+
+            <div class="form-group">
+                <label for="assinatura">Assinatura do Responsável</label>
+                <div class="signature-container">
+                    <canvas id="signature-pad" class="signature-pad" width="400" height="200"></canvas>
+                </div>
+                <div class="signature-buttons mt-2">
+                    <button type="button" class="btn btn-secondary btn-sm" id="clear-signature">Limpar Assinatura</button>
+                </div>
+                <input type="hidden" id="assinaturaData" name="assinaturaData">
+                <small class="form-text text-muted">Por favor, assine usando a caneta do tablet.</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block" id="cadastrarBtn">Confirmar Check-in</button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.1.0/vanilla-masker.min.js"></script>
+    <script src="../firebase/firebaseConfig.js"></script>
+    <script src="../firebase/firebaseConfig2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
+    <script>
+
+        // Função para converter texto para maiúsculas
+        function toUpperCase(input) {
+            input.value = input.value.toUpperCase();
+        }
+
+        // Adicionar evento na digitação para campos de texto
+        const textInputs = document.querySelectorAll('input[type="text"]');
+        textInputs.forEach(input => {
+            input.addEventListener('input', function () {
+                toUpperCase(this);
+            });
+        });
+
+        // Máscaras
+        VMasker(document.getElementById("cpf")).maskPattern("999.999.999-99");
+        VMasker(document.getElementById("telefone1")).maskPattern("(99) 99999-9999");
+
+        // Calcular idade automaticamente
+        document.getElementById('dtnasc').addEventListener('change', function () {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById('idade').value = age + " anos";
+        });
+
+        // Mostrar/esconder campos condicionais
+        document.querySelectorAll('input[name="alergiasAlimentares"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('quaisAlergiasAlimentaresDiv').style.display = 
+                    this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        document.querySelectorAll('input[name="alergiasMedicamentos"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('quaisAlergiasMedicamentosDiv').style.display =
+                    this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        document.querySelectorAll('input[name="alergiasInsetos"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('quaisAlergiasInsetosDiv').style.display = 
+                    this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        document.querySelectorAll('input[name="medicamentosControlados"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('quaisMedicamentosDiv').style.display = 
+                    this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        document.querySelectorAll('input[name="problemasSaude"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('quaisProblemasSaudeDiv').style.display = 
+                    this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        document.querySelectorAll('input[name="restricoesAtividades"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('quaisRestricoesDiv').style.display = 
+                    this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        document.querySelectorAll('input[name="restricoesAlimentares"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('quaisRestricoesAlimentaresDiv').style.display = 
+                    this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        document.querySelectorAll('input[name="comportamentoEspecial"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('qualComportamentoDiv').style.display = 
+                    this.value === 'sim' ? 'block' : 'none';
+            });
+        });
+
+        // Função para carregar os acampantes com status "pago" e sem check-in no dropdown
+        function carregarAcampantes() {
+            const selectNome = document.getElementById('nome');
+            
+            // Limpar opções existentes, mantendo apenas a primeira
+            while (selectNome.options.length > 1) {
+                selectNome.remove(1);
+            }
+            
+            // Buscar acampantes com status "pago" no Firestore e que não fizeram check-in
+            db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                .where("statusPagamento", "==", "pago")
+                .where("anoevento", "==", "2025")
+                .orderBy("nome")
+                .get()
+                .then((querySnapshot) => {
+                    if (!querySnapshot.empty) {
+                        let acampantesDisponiveis = 0;
+                        
+                        querySnapshot.forEach((doc) => {
+                            const data = doc.data();
+                            
+                            // Verificar se o acampante ainda não realizou o check-in
+                            if (!data.statusCheckin || data.statusCheckin !== "realizado") {
+                                const option = document.createElement('option');
+                                option.value = data.nome;
+                                option.textContent = data.nome;
+                                option.setAttribute('data-id', doc.id);
+                                selectNome.appendChild(option);
+                                acampantesDisponiveis++;
+                            }
+                        });
+                        
+                        console.log(`${acampantesDisponiveis} acampantes disponíveis para check-in carregados no dropdown.`);
+                        
+                        if (acampantesDisponiveis === 0) {
+                            const option = document.createElement('option');
+                            option.value = "";
+                            option.textContent = "Todos os acampantes já realizaram check-in";
+                            selectNome.appendChild(option);
+                        }
+                    } else {
+                        console.log("Nenhum acampante com status 'pago' encontrado.");
+                        const option = document.createElement('option');
+                        option.value = "";
+                        option.textContent = "Nenhum acampante disponível para check-in";
+                        selectNome.appendChild(option);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Erro ao carregar acampantes:", error);
+                    alert('Erro ao carregar lista de acampantes. Por favor, recarregue a página.');
+                });
+        }
+
+        // Carregar acampantes quando a página for carregada
+        document.addEventListener('DOMContentLoaded', carregarAcampantes);
+
+        // Modificar o evento de seleção do nome para buscar os dados do acampante
+        document.getElementById('nome').addEventListener('change', function() {
+            const nomeAcampante = this.value;
+            if (nomeAcampante) {
+                // Buscar dados do acampante selecionado
+                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                    .where("nome", "==", nomeAcampante)
+                    .where("anoevento", "==", "2025")
+                    .get()
+                    .then((querySnapshot) => {
+                        if (!querySnapshot.empty) {
+                            querySnapshot.forEach((doc) => {
+                                const data = doc.data();
+                                document.getElementById('cpf').value = data.cpf || '';
+                                document.getElementById('dtnasc').value = data.dtnasc || '';
+                                
+                                // Disparar o evento change para calcular a idade
+                                const event = new Event('change');
+                                document.getElementById('dtnasc').dispatchEvent(event);
+                                
+                                // Preencher outros campos se existirem no banco de dados
+                                if (data.fonecontato) document.getElementById('telefone1').value = data.fonecontato;
+                                if (data.contato) document.getElementById('responsavel').value = data.contato;
+                            });
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao buscar dados do acampante:", error);
+                    });
+            } else {
+                // Limpar campos se nenhum acampante for selecionado
+                document.getElementById('cpf').value = '';
+                document.getElementById('dtnasc').value = '';
+                document.getElementById('idade').value = '';
+                document.getElementById('telefone1').value = '';
+                document.getElementById('responsavel').value = '';
+            }
+        });
+
+        // Definir a data de preenchimento
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+        document.getElementById('dataPreenchimento').value = dataAtual;
+
+        // Enviar formulário
+        document.getElementById('checkinForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            // Verificar se a assinatura foi feita
+            if (signaturePad.isEmpty()) {
+                alert('Por favor, forneça a assinatura do responsável antes de confirmar o check-in.');
+                return;
+            }
+            
+            // Capturar a assinatura como uma imagem base64
+            const assinaturaData = signaturePad.toDataURL('image/png');
+            document.getElementById('assinaturaData').value = assinaturaData;
+            
+            // Validar campos condicionais
+            const alergiasAlimentaresSim = document.getElementById('alergiasAlimentaresSim').checked;
+            const alergiasMedicamentosSim = document.getElementById('alergiasMedicamentosSim').checked;
+            const alergiasInsetosSim = document.getElementById('alergiasInsetosSim').checked;
+            const medicamentosControladosSim = document.getElementById('medicamentosControladosSim').checked;
+            const problemasSaudeSim = document.getElementById('problemasSaudeSim').checked;
+            const restricoesAtividadesSim = document.getElementById('restricoesAtividadesSim').checked;
+            const restricoesAlimentaresSim = document.getElementById('restricoesAlimentaresSim').checked;
+            const comportamentoEspecialSim = document.getElementById('comportamentoEspecialSim').checked;
+
+            if (alergiasAlimentaresSim && !document.getElementById('quaisAlergiasAlimentares').value.trim()) {
+                alert('Por favor, especifique quais alergias alimentares o acampante possui.');
+                return;
+            }
+
+            if (alergiasMedicamentosSim && !document.getElementById('quaisAlergiasMedicamentos').value.trim()) {
+                alert('Por favor, especifique quais alergias a medicamentos o acampante possui.');
+                return;
+            }
+
+            if (alergiasInsetosSim && !document.getElementById('quaisAlergiasInsetos').value.trim()) {
+                alert('Por favor, especifique quais alergias a picadas de insetos o acampante possui.');
+                return;
+            }
+
+            if (medicamentosControladosSim && !document.getElementById('quaisMedicamentos').value.trim()) {
+                alert('Por favor, especifique quais medicamentos controlados o acampante utiliza.');
+                return;
+            }
+
+            if (problemasSaudeSim && !document.getElementById('quaisProblemasSaude').value.trim()) {
+                alert('Por favor, especifique quais problemas de saúde o acampante possui.');
+                return;
+            }
+
+            if (restricoesAtividadesSim && !document.getElementById('quaisRestricoes').value.trim()) {
+                alert('Por favor, especifique quais restrições para atividades físicas o acampante possui.');
+                return;
+            }
+
+            if (restricoesAlimentaresSim && !document.getElementById('quaisRestricoesAlimentares').value.trim()) {
+                alert('Por favor, especifique quais restrições alimentares o acampante possui.');
+                return;
+            }
+
+            if (comportamentoEspecialSim && !document.getElementById('qualComportamento').value.trim()) {
+                alert('Por favor, especifique qual comportamento especial o acampante possui.');
+                return;
+            }
+
+            // Coletar dados do formulário
+            const formData = {
+                nome: document.getElementById('nome').value.trim().toUpperCase(),
+                cpf: document.getElementById('cpf').value,
+                dtnasc: document.getElementById('dtnasc').value,
+                idade: document.getElementById('idade').value,
+                responsavel: document.getElementById('responsavel').value,
+                telefone1: document.getElementById('telefone1').value,
+                
+                // Saúde
+                alergiasAlimentares: document.querySelector('input[name="alergiasAlimentares"]:checked').value,
+                quaisAlergiasAlimentares: document.getElementById('quaisAlergiasAlimentares').value,
+                alergiasMedicamentos: document.querySelector('input[name="alergiasMedicamentos"]:checked').value,
+                quaisAlergiasMedicamentos: document.getElementById('quaisAlergiasMedicamentos').value,
+                alergiasInsetos: document.querySelector('input[name="alergiasInsetos"]:checked').value,
+                quaisAlergiasInsetos: document.getElementById('quaisAlergiasInsetos').value,
+                medicamentosControlados: document.querySelector('input[name="medicamentosControlados"]:checked').value,
+                quaisMedicamentos: document.getElementById('quaisMedicamentos').value,
+                problemasSaude: document.querySelector('input[name="problemasSaude"]:checked').value,
+                quaisProblemasSaude: document.getElementById('quaisProblemasSaude').value,
+                tipoSanguineo: document.getElementById('tipoSanguineo').value,
+                vacinasEmDia: document.querySelector('input[name="vacinasEmDia"]:checked').value,
+                seguroSaude: document.getElementById('seguroSaude').value,
+                hospitalPreferencia: document.getElementById('hospitalPreferencia').value,
+                restricoesAtividades: document.querySelector('input[name="restricoesAtividades"]:checked').value,
+                quaisRestricoes: document.getElementById('quaisRestricoes').value,
+                
+                // Alimentação
+                restricoesAlimentares: document.querySelector('input[name="restricoesAlimentares"]:checked').value,
+                quaisRestricoesAlimentares: document.getElementById('quaisRestricoesAlimentares').value,
+                alimentosNaoConsome: document.getElementById('alimentosNaoConsome').value,
+                
+                // Autorizações
+                autorizacaoParticipacao: document.getElementById('autorizacaoParticipacao').checked,
+                autorizacaoEmergencia: document.getElementById('autorizacaoEmergencia').checked,
+                autorizacaoFotos: document.getElementById('autorizacaoFotos').checked,
+                autorizacaoMedicamentos: document.getElementById('autorizacaoMedicamentos').checked,
+                
+                // Outros
+                comportamentoEspecial: document.querySelector('input[name="comportamentoEspecial"]:checked').value,
+                qualComportamento: document.getElementById('qualComportamento').value,
+                observacoesAdicionais: document.getElementById('observacoesAdicionais').value,
+                dataPreenchimento: document.getElementById('dataPreenchimento').value,
+                assinatura: document.getElementById('assinaturaData').value, 
+                statusCheckin: 'realizado',
+                dtCheckin: new Date().toISOString()
+            };
+
+            // Salvar no Firestore
+            db.collection("Eventos").doc("ComRoca2025").collection("checkin").add(formData)
+                .then((docRef) => {
+                    console.log("Check-in realizado com ID: ", docRef.id);
+                    
+                    // Atualizar status na coleção de inscrições
+                    db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+                        .where("nome", "==", formData.nome)
+                        .where("anoevento", "==", "2025")
+                        .get()
+                        .then((querySnapshot) => {
+                            querySnapshot.forEach((doc) => {
+                                doc.ref.update({
+                                    statusCheckin: 'realizado',
+                                    dtCheckin: new Date().toISOString()
+                                });
+                            });
+                        });
+                    
+                    alert('Check-in realizado com sucesso!');
+                    window.location.href = 'checkin_sucesso.html';
+                })
+                .catch((error) => {
+                    console.error("Erro ao realizar check-in: ", error);
+                    alert('Erro ao realizar check-in. Por favor, tente novamente.');
+                });
+        });
+
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header');
+            const headerTitle = document.querySelector('.header-title');
+
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                headerTitle.classList.add('visible');
+            } else {
+                header.classList.remove('scrolled');
+                headerTitle.classList.remove('visible');
+            }
+        });
+
+        // Inicializar o pad de assinatura - MOVER PARA FORA DO EVENTO DE SCROLL
+        const canvas = document.getElementById('signature-pad');
+        const signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)',
+            penColor: 'rgb(0, 0, 0)'
+        });
+
+        // Ajustar o tamanho do canvas quando a janela for redimensionada
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear(); // Limpa a assinatura
+        }
+
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
+
+        // Botão para limpar a assinatura
+        document.getElementById('clear-signature').addEventListener('click', function() {
+            signaturePad.clear();
+        });
+    </script>
+</body>
+
+</html>
