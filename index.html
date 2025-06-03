@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>INSCRIÇÕES</title>
-    <link rel="shortcut icon" href="./assets/3.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="./assets/fav.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
     <style>
@@ -22,7 +22,7 @@
         }
 
         .btn-gradient {
-            background: linear-gradient(to right, #663800, #FF8C00);
+            background: linear-gradient(to right, #6f6f71, #71a5ba);
             color: white;
             font-weight: bold;
             padding: 12px 30px;
@@ -30,22 +30,23 @@
             font-size: 18px;
             text-transform: uppercase;
             border: none;
-            box-shadow: 0 4px 15px rgba(58, 16, 86, 0.4);
+            box-shadow: 0 4px 15px rgba(111, 111, 113, 0.4);
             transition: all 0.3s ease;
-            position: absolute;
-            top: 52%;
-            left: 48%;
+            position: fixed;
+            top: 80%;
+            left: 50%;
             transform: translateX(-50%);
             text-decoration: none;
             min-width: 200px;
             text-align: center;
             animation: subtle-glow 3s ease-in-out infinite;
+            z-index: 10;
         }
 
         .btn-gradient:hover {
-            background: linear-gradient(to right, #FF8C00, #663800);
+            background: linear-gradient(to right, #71a5ba, #6f6f71);
             transform: translateX(-50%) translateY(-2px);
-            box-shadow: 0 8px 25px rgba(58, 16, 86, 0.6);
+            box-shadow: 0 8px 25px rgba(111, 111, 113, 0.6);
             color: white;
             text-decoration: none;
             animation: none;
@@ -53,22 +54,29 @@
 
         /* Efeito glow profissional */
         @keyframes subtle-glow {
-            0%, 100% {
-                box-shadow: 0 4px 15px rgba(58, 16, 86, 0.4);
+
+            0%,
+            100% {
+                box-shadow: 0 4px 15px rgba(111, 111, 113, 0.4);
             }
+
             50% {
-                box-shadow: 0 4px 20px rgba(255, 140, 0, 0.6), 0 0 30px rgba(255, 140, 0, 0.3);
+                box-shadow: 0 4px 20px rgba(113, 165, 186, 0.6), 0 0 30px rgba(111, 111, 113, 0.3);
             }
         }
 
         .desktop-image {
+            position: fixed;
             margin-top: 0px;
-            width: 100%;
-            height: auto;
-            display: block;
             margin-left: auto;
             margin-right: auto;
-            object-fit: contain;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: block;
+            object-fit: fill;
+            object-position: center top;
+            z-index: 1;
         }
 
         .mobile-image {
@@ -102,7 +110,7 @@
                 padding: 12px 30px;
                 font-size: 16px;
                 min-width: 250px;
-                top: 58%;
+                top: 83%;
                 left: 50%;
                 z-index: 10;
                 position: fixed;
@@ -112,11 +120,11 @@
 </head>
 
 <body>
-    <img src="./assets/Texto.png" alt="Texto" class="img-fluid mb-4 desktop-image">
-    <img src="./assets/Texto Celular.png" alt="Texto" class="img-fluid mb-4 mobile-image">
+    <img src="./assets/Texto.jpg" alt="Texto" class="img-fluid mb-4 desktop-image">
+    <img src="./assets/Texto Celular.jpg" alt="Texto" class="img-fluid mb-4 mobile-image">
 
     <a href="frminscricao.html" class="btn-gradient">
-        Inscreva-se Agora
+        Inscreva-se Aqui
     </a>
 
 </body>
