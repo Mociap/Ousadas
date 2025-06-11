@@ -744,7 +744,7 @@
 
 function sincronizarPagamentos() {
     // Buscar pagamentos confirmados que não estão no caixa
-    db.collection("Eventos").doc("ComRoca2025").collection("pagamentos")
+    db.collection("Eventos").doc("Ousadas").collection("pagamentos")
         .where("status", "==", "confirmado")
         .get()
         .then((pagamentosSnapshot) => {
@@ -755,13 +755,13 @@ function sincronizarPagamentos() {
                 const pagamento = doc.data();
                 
                 // Verificar se já existe no caixa
-                db.collection("Eventos").doc("ComRoca2025").collection("caixa")
+                db.collection("Eventos").doc("Ousadas").collection("caixa")
                     .where("pagamentoId", "==", doc.id)
                     .get()
                     .then((caixaSnapshot) => {
                         if (caixaSnapshot.empty) {
                             // Não existe no caixa, criar entrada
-                            const novaRef = db.collection("Eventos").doc("ComRoca2025").collection("caixa").doc();
+                            const novaRef = db.collection("Eventos").doc("Ousadas").collection("caixa").doc();
                             
                             batch.set(novaRef, {
                                 descricao: `Inscrição - ${pagamento.participanteNome}`,
@@ -880,7 +880,7 @@ $(document).ready(function () {
 
         // Função para carregar o dashboard
         function carregarDashboard() {
-            db.collection("Eventos").doc("ComRoca2025").collection("caixa")
+            db.collection("Eventos").doc("Ousadas").collection("caixa")
                 .get()
                 .then((querySnapshot) => {
                     let totalTransacoes = querySnapshot.size;
@@ -992,7 +992,7 @@ $(document).ready(function () {
 
         // Função para carregar transações
         function carregarTransacoes() {
-            db.collection("Eventos").doc("ComRoca2025").collection("caixa")
+            db.collection("Eventos").doc("Ousadas").collection("caixa")
                 .orderBy("data", "desc")
                 .get()
                 .then((querySnapshot) => {
@@ -1075,7 +1075,7 @@ $(document).ready(function () {
             }
             
             // Adicionar transação ao Firestore
-            db.collection("Eventos").doc("ComRoca2025").collection("caixa").add({
+            db.collection("Eventos").doc("Ousadas").collection("caixa").add({
                 descricao: descricao,
                 data: data,
                 valor: valor,
@@ -1113,7 +1113,7 @@ $(document).ready(function () {
         function excluirTransacao() {
             const id = $('#confirmarExclusao').data('id');
             
-            db.collection("Eventos").doc("ComRoca2025").collection("caixa").doc(id)
+            db.collection("Eventos").doc("Ousadas").collection("caixa").doc(id)
                 .delete()
                 .then(() => {
                     alert('Transação excluída com sucesso!');
@@ -1170,7 +1170,7 @@ $(document).ready(function () {
             }
             
             // Atualizar transação no Firestore
-            db.collection("Eventos").doc("ComRoca2025").collection("caixa").doc(id)
+            db.collection("Eventos").doc("Ousadas").collection("caixa").doc(id)
                 .update({
                     descricao: descricao,
                     data: data,
@@ -1845,7 +1845,7 @@ $(document).ready(function () {
                 }
                 
                 // Criar referência para novo documento
-                const novaRef = db.collection("Eventos").doc("ComRoca2025").collection("caixa").doc();
+                const novaRef = db.collection("Eventos").doc("Ousadas").collection("caixa").doc();
                 
                 // Adicionar ao batch
                 batch.set(novaRef, {

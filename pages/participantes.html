@@ -226,7 +226,7 @@
                         <th>Celular</th>
                         <!-- <th>Responsável</th> -->
                         <!-- <th>Cel. Responsável</th> -->
-                        <th>Célula</th>
+                        <!-- <th>Célula</th> -->
                         <th>Igreja</th>
                         <th>Pagamento</th>
                         <th>Ações</th>
@@ -354,7 +354,7 @@
             text: 'Exportar Excel',
             className: 'btn btn-export d-none',
             exportOptions: {
-                columns: [0, 1, 2, 3, 4, 5, 6, 7]
+                columns: [0, 1, 2, 3, 4, 5, 6]
             }
         },
     ]
@@ -415,7 +415,7 @@
                     dadosAtualizacao.formaPagamento = ''; // Limpa a forma de pagamento se status for pendente
                 }
 
-                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes").doc(participanteId)
+                db.collection("Eventos").doc("Ousadas").collection("inscricoes").doc(participanteId)
                     .update(dadosAtualizacao)
                     .then(() => {
                         alert('Status de pagamento atualizado com sucesso!');
@@ -455,7 +455,7 @@
 
         // Função para Carregar participante
         function carregarParticipantes() {
-            db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+            db.collection("Eventos").doc("Ousadas").collection("inscricoes")
                 .where("anoevento", "==", "2025")
                 .get()
                 .then((querySnapshot) => {
@@ -476,7 +476,7 @@
                             participante.celular,
                             // participante.contato,
                             // participante.fonecontato,
-                            participante.celula,
+                            // participante.celula,
                             participante.igreja === 'Outra' ? participante.outraIgreja : participante.igreja,
                             `<span class="badge ${participante.statusPagamento === 'pago' ? 'badge-pago' : 'badge-pendente'}">${participante.statusPagamento === 'pago' ? 'Pago' : 'Pendente'}</span>`,
                             `<button class="btn btn-info btn-sm" onclick="verDetalhes('${doc.id}')">Ver</button>`
@@ -512,7 +512,7 @@
         }
 
         function verDetalhes(participanteId) {
-    db.collection("Eventos").doc("ComRoca2025").collection("inscricoes").doc(participanteId)
+    db.collection("Eventos").doc("Ousadas").collection("inscricoes").doc(participanteId)
         .get()
         .then((doc) => {
             if (doc.exists) {
@@ -654,7 +654,7 @@ function formatarDataHora(dataString) {
             }
 
             if (confirm("Tem certeza que deseja excluir este participante? Esta ação não pode ser desfeita.")) {
-                db.collection("Eventos").doc("ComRoca2025").collection("inscricoes").doc(participanteId)
+                db.collection("Eventos").doc("Ousadas").collection("inscricoes").doc(participanteId)
                     .delete()
                     .then(() => {
                         alert("Participante excluído com sucesso!");

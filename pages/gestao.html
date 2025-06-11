@@ -401,7 +401,7 @@
         // Função para carregar estatísticas gerais
         function carregarEstatisticas() {
             // Carregar dados de pagamentos
-            db.collection("Eventos").doc("ComRoca2025").collection("inscricoes")
+            db.collection("Eventos").doc("Ousadas").collection("inscricoes")
                 .where("anoevento", "==", "2025")
                 .get()
                 .then((querySnapshot) => {
@@ -437,7 +437,7 @@
                 });
 
             // Carregar dados de tarefas
-            db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+            db.collection("Eventos").doc("Ousadas").collection("checklist")
                 .get()
                 .then((querySnapshot) => {
                     let totalTarefas = querySnapshot.size;
@@ -466,7 +466,7 @@
             listaTarefas.innerHTML = '';
 
             // Buscar tarefas de alta prioridade que não estão concluídas
-            db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+            db.collection("Eventos").doc("Ousadas").collection("checklist")
                 .where("prioridade", "==", "high")
                 .where("status", "!=", "completed")
                 .orderBy("status")
@@ -476,7 +476,7 @@
                 .then((querySnapshot) => {
                     if (querySnapshot.empty) {
                         // Se não houver tarefas de alta prioridade, buscar as de média prioridade
-                        return db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+                        return db.collection("Eventos").doc("Ousadas").collection("checklist")
                             .where("prioridade", "==", "medium")
                             .where("status", "!=", "completed")
                             .orderBy("status")
@@ -549,7 +549,7 @@
             const listaPagamentos = document.getElementById('ultimosPagamentos');
             listaPagamentos.innerHTML = '';
 
-            db.collection("Eventos").doc("ComRoca2025").collection("pagamentos")
+            db.collection("Eventos").doc("Ousadas").collection("pagamentos")
                 .where("status", "==", "pago")
                 .orderBy("dataPagamento", "desc")
                 .limit(5)
@@ -628,7 +628,7 @@
             ];
 
             // Buscar todas as tarefas
-            db.collection("Eventos").doc("ComRoca2025").collection("checklist")
+            db.collection("Eventos").doc("Ousadas").collection("checklist")
                 .get()
                 .then((querySnapshot) => {
                     // Objeto para armazenar estatísticas por departamento
