@@ -92,7 +92,7 @@ body {
 
 @media (max-width: 768px) {
   body {
-    padding-top: 80px;
+    padding-top: 90px;
   }
       .mobile-image {
         display: block;
@@ -108,8 +108,8 @@ body {
     }
 
   .container {
-    max-width: 97%;
-    margin: 10px 5px;
+    max-width: 95%;
+    margin: 10px auto;
     padding: 15px;
     border-radius: 0;
   }
