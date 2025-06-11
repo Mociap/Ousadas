@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSCRIÇÕES CONFERÊNCIA OUSADAS</title>
+    <link rel="shortcut icon" href="./assets/favico.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./css/frminscricao.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+</head>
+
+<body>
+    <div class="header">
+        <header class="header">
+            <img src="assets/LogoBranco.png" alt="Logo" class="header-logo">
+        </header>
+        <!-- <h2 class="header-title">CONFERÊNCIA OUSADAS</h2> -->
+    </div>
+
+    <div class="container">
+        <h2 class="text-center mb-4 font-weight-bold">CONFERÊNCIA OUSADAS</h2>
+        <div class="divider"></div>
+
+        <div class="info-box">
+            <p><strong>Valor da inscrição:</strong> R$ 120,00</p>
+            <p><strong>Tipo de Pagamento:</strong> PIX, Espécie e Cartão (Com Taxa da Maquininha)*</p>
+            <!-- <p style="margin-top: -15px;"><small><i>*Pagamento CARTÃO pode ser parcelado até 10x.</i></small></p> -->
+            <p>*Para realização do Pagamento, entrar em contato com <b>Pra. Iara</b></p>
+            <p style="margin-top: -15px;"><b>Whatsapp: </b><a href="https://wa.me/556181512434" target="_blank">61
+                    98151-2434</a></p>
+        </div>
+
+        <form id="acampForm">
+            <div class="form-group">
+                <label for="nome">Nome Completo (Conforme RG)</label>
+                <input type="text" class="form-control" id="nome" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="dtnasc">Data de Nascimento</label>
+                    <input type="date" class="form-control" id="dtnasc" placeholder="DD/MM/AAAA" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="idade">Idade</label>
+                    <input type="text" class="form-control" id="idade" readonly>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="celular">Celular</label>
+                    <input type="text" class="form-control" id="celular" placeholder="(99) 99999-9999" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="igreja">Igreja</label>
+                    <select class="form-control" id="igreja" required>
+                        <option value="RESTAURAÇÃO E VIDA">RESTAURAÇÃO E VIDA</option>
+                        <option value="OUTRA">Outra Igreja</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-6" id="outraIgrejaDiv" style="display: none;">
+                    <label for="outraIgreja">Nome da Igreja</label>
+                    <input type="text" class="form-control" id="outraIgreja" placeholder="Digite o nome da sua igreja">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="dataPreenchimento">Data de Preenchimento</label>
+                <input type="text" class="form-control" id="dataPreenchimento" readonly>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="cadastrarBtn">Cadastrar</button>
+        </form>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-masker/1.1.0/vanilla-masker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="./firebase/firebaseConfig.js"></script>
+    <script src="./firebase/firebaseConfig2.js"></script>
+
+    <script>
+        // Inicialização do EmailJS
+        emailjs.init("service_8dce1so");
+
+        // Função para verificar se o nome já existe
+        function verificarNomeExistente(nome) {
+            return db.collection("Eventos").doc("Ousadas").collection("inscricoes")
+                .where("nome", "==", nome)
+                .where("anoevento", "==", "2025")
+                .get()
+                .then((querySnapshot) => {
+                    return !querySnapshot.empty;
+                });
+        }
+
+        // Adicionar evento 'blur' ao campo 'nome'
+        document.getElementById('nome').addEventListener('blur', function () {
+            const nome = this.value.trim().toUpperCase();
+            if (nome) {
+                verificarNomeExistente(nome).then(existe => {
+                    if (existe) {
+                        alert('Este nome já está cadastrado.');
+                        this.value = ''; // Limpa o campo
+                        this.focus(); // Redireciona o cursor para o campo
+                        document.getElementById('cadastrarBtn').disabled = true;
+                    } else {
+                        document.getElementById('cadastrarBtn').disabled = false;
+                    }
+                });
+            }
+        });
+
+        // Função para converter texto para maiúsculas
+        function toUpperCase(input) {
+            input.value = input.value.toUpperCase();
+        }
+
+        // Adicionar evento na digitação para campos de texto (exceto igreja que é readonly)
+        const textInputs = document.querySelectorAll('input[type="text"]:not([readonly])');
+        textInputs.forEach(input => {
+            input.addEventListener('input', function () {
+                toUpperCase(this);
+            });
+        });
+
+        // Controle do campo "Outra Igreja"
+        document.getElementById('igreja').addEventListener('change', function() {
+            const outraIgrejaDiv = document.getElementById('outraIgrejaDiv');
+            const outraIgrejaInput = document.getElementById('outraIgreja');
+            
+            if (this.value === 'OUTRA') {
+                outraIgrejaDiv.style.display = 'block';
+                outraIgrejaInput.required = true;
+            } else {
+                outraIgrejaDiv.style.display = 'none';
+                outraIgrejaInput.required = false;
+                outraIgrejaInput.value = '';
+            }
+        });
+
+        // Adicionar o campo outraIgreja à conversão para maiúsculas
+        document.getElementById('outraIgreja').addEventListener('input', function() {
+            toUpperCase(this);
+        });
+
+        // Máscaras
+        VMasker(document.getElementById("celular")).maskPattern("(99) 99999-9999");
+
+        // Calcular idade automaticamente
+        document.getElementById('dtnasc').addEventListener('change', function () {
+            const birthDate = new Date(this.value);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            document.getElementById('idade').value = age + " anos";
+        });
+
+        // Definir a data de preenchimento
+        const dataPreenchimentoElement = document.getElementById('dataPreenchimento');
+        const dataAtual = new Date().toLocaleDateString('pt-BR');
+        dataPreenchimentoElement.value = dataAtual;
+
+        // Evento de submit do formulário
+        document.getElementById('acampForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Verificar novamente se o nome já existe antes de enviar
+            const nome = document.getElementById('nome').value.trim().toUpperCase();
+            verificarNomeExistente(nome).then(existe => {
+                if (existe) {
+                    alert('Este nome já está cadastrado para o evento. Não é possível prosseguir com o cadastro.');
+                    return;
+                }
+
+                // Se o nome não existir, continuar com o envio do formulário
+                const igrejaSelect = document.getElementById('igreja').value;
+                const outraIgreja = document.getElementById('outraIgreja').value;
+                const igrejaFinal = igrejaSelect === 'OUTRA' ? outraIgreja : igrejaSelect;
+
+                const formData = {
+                    nome: nome,
+                    dtnasc: document.getElementById('dtnasc').value,
+                    idade: document.getElementById('idade').value,
+                    celular: document.getElementById('celular').value,
+                    igreja: igrejaFinal, // Usar o valor final da igreja
+                    dataPreenchimento: document.getElementById('dataPreenchimento').value,
+                    anoevento: '2025',
+                    statusPagamento: 'pendente',
+                    dtRegistro: new Date().toISOString()
+                };
+
+                console.log('Dados a serem enviados:', formData);
+
+                db.collection("Eventos").doc("Ousadas").collection("inscricoes").add(formData)
+                    .then((docRef) => {
+                        console.log("Documento escrito com ID: ", docRef.id);
+
+                        // Send email notification
+                        const emailData = {
+                            to: "mozer.cielle@gmail.com",
+                            subject: "Nova Inscrição Ousadas",
+                            text: `Nova inscrição realizada:\nNome: ${formData.nome}\nTelefone: ${formData.celular}\nData: ${formData.dataPreenchimento}`
+                        };
+
+                        // Using EmailJS service
+                        emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailData, "YOUR_USER_ID")
+                            .then(response => console.log("Email enviado:", response))
+                            .catch(error => console.error("Erro ao enviar email:", error));
+
+                        window.location.href = 'obrigado.html';
+                        this.reset();
+
+                        // Resetar campos adicionais
+                        document.getElementById('dataPreenchimento').value = new Date().toLocaleDateString('pt-BR');
+                        document.getElementById('idade').value = '';
+                        document.getElementById('igreja').value = 'RESTAURAÇÃO E VIDA'; // Manter valor fixo
+                    })
+                    .catch((error) => {
+                        console.error("Erro ao adicionar documento: ", error);
+                        alert('Erro ao realizar inscrição. Por favor, tente novamente.');
+                    });
+            });
+        });
+
+        window.addEventListener('scroll', function () {
+            const header = document.querySelector('.header');
+            /* const headerTitle = document.querySelector('.header-title'); */
+
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+                /* headerTitle.classList.add('visible');*/
+            } else {
+                header.classList.remove('scrolled');
+                /* headerTitle.classList.remove('visible');*/
+            }
+        });
+
+    </script>
+</body>
+
+</html>

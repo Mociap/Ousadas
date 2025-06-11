@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obrigado pela Inscrição</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap">
+    <link rel="icon" type="image/x-icon" href="./assets/3.ico">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 50px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        h1 {
+            color: #0b8000;
+            margin-bottom: 30px;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 30px;
+        }
+        
+        .desktop-image {
+            margin-top: 0px;
+            width: 100%;
+            /* 100% da largura disponível */
+            height: auto;
+            max-height: 120vh;
+            /* Limita a altura a 90% da altura da viewport */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            object-fit: contain;
+            /* Garante que a imagem inteira seja exibida */
+        }
+
+        .mobile-image {
+            margin-top: 0;
+            /* Posiciona no topo vertical */
+            max-width: 100%;
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media screen and (max-width: 768px) {
+            .mobile-image {
+                display: block;
+            }
+
+            .desktop-image {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Obrigado!</h1>
+        <h2>Dados Coletados com Sucesso!</h2>
+        <p>Olá! Você deu entrada no processo de inscrição para A <strong>CONFERÊNCIA OUSADAS.</strong></p>
+        <p>Entre em contato com XXXXXXX para que você possa finalizar o processo</p>
+        <p style="margin-top: -15px;"><b>Whatsapp: </b><a href="https://wa.me/5583XXXXXXXXXX" target="_blank">XX
+                    XXXXX-XXXXX</a></p>
+        <img src="./assets/ObrigadoPC.jpg" alt="Texto" class="img-fluid mb-4 desktop-image">
+        <img src="./assets/ObrigadoCell.jpg" alt="Texto" class="img-fluid mb-4 mobile-image">
+    </div>
+</body>
+</html>
+
